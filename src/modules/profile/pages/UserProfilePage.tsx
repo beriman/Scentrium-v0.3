@@ -257,7 +257,10 @@ export default function UserProfilePage() {
         <div className="absolute -bottom-12 left-8">
           <Avatar className="h-24 w-24 border-4 border-white">
             <AvatarImage
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
+              src={
+                profile?.avatar_url ||
+                `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`
+              }
               alt={userData.username}
             />
             <AvatarFallback>{userData.username[0]}</AvatarFallback>
@@ -397,7 +400,7 @@ export default function UserProfilePage() {
           <Tabs defaultValue="activity">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="activity">Activity</TabsTrigger>
-              <TabsTrigger value="badges">Badges</TabsTrigger>
+              <TabsTrigger value="badges">Badges & Achievements</TabsTrigger>
               <TabsTrigger value="upgrade">Upgrade Membership</TabsTrigger>
             </TabsList>
 
@@ -626,9 +629,11 @@ export default function UserProfilePage() {
                       Unlock premium features, increase your daily EXP limit,
                       and get access to exclusive business tools.
                     </p>
-                    <Button className="bg-purple-700 hover:bg-purple-800">
-                      Upgrade Now
-                    </Button>
+                    <Link to="/profile/membership">
+                      <Button className="bg-purple-700 hover:bg-purple-800">
+                        Upgrade Now
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>

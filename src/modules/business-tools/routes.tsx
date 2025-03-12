@@ -1,13 +1,53 @@
 import { RouteObject } from "react-router-dom";
 import { lazy } from "react";
 
-const BusinessToolsLayout = lazy(
-  () => import("./components/BusinessToolsLayout"),
+const BusinessToolsLayout = lazy(() =>
+  import("./components/BusinessToolsLayout").then((module) => ({
+    default: module.default,
+  })),
 );
-const BusinessDashboard = lazy(() => import("./pages/BusinessDashboard"));
-const InventoryManagement = lazy(() => import("./pages/InventoryManagement"));
-const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
-const MarketingTools = lazy(() => import("./pages/MarketingTools"));
+
+const BusinessDashboard = lazy(() =>
+  import("./pages/BusinessDashboard").then((module) => ({
+    default: module.default,
+  })),
+);
+
+const InventoryManagement = lazy(() =>
+  import("./components/InventoryManagement").then((module) => ({
+    default: module.default,
+  })),
+);
+
+const FinancialDashboard = lazy(() =>
+  import("./components/FinancialDashboard").then((module) => ({
+    default: module.default,
+  })),
+);
+
+const ProfitCalculator = lazy(() =>
+  import("./components/ProfitCalculator").then((module) => ({
+    default: module.default,
+  })),
+);
+
+const SalesAnalytics = lazy(() =>
+  import("./pages/SalesAnalytics").then((module) => ({
+    default: module.default,
+  })),
+);
+
+const BrandingToolkit = lazy(() =>
+  import("./pages/BrandingToolkit").then((module) => ({
+    default: module.default,
+  })),
+);
+
+const MarketingTools = lazy(() =>
+  import("./pages/MarketingTools").then((module) => ({
+    default: module.default,
+  })),
+);
 
 export const businessToolsRoutes: RouteObject[] = [
   {
@@ -16,7 +56,10 @@ export const businessToolsRoutes: RouteObject[] = [
     children: [
       { index: true, element: <BusinessDashboard /> },
       { path: "inventory", element: <InventoryManagement /> },
-      { path: "analytics", element: <AnalyticsDashboard /> },
+      { path: "finances", element: <FinancialDashboard /> },
+      { path: "calculator", element: <ProfitCalculator /> },
+      { path: "analytics", element: <SalesAnalytics /> },
+      { path: "branding", element: <BrandingToolkit /> },
       { path: "marketing", element: <MarketingTools /> },
     ],
   },

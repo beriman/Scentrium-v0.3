@@ -1,17 +1,47 @@
 import { RouteObject } from "react-router-dom";
 import { lazy } from "react";
 
-const LearningLayout = lazy(() => import("./components/LearningLayout"));
-const LearningHomePage = lazy(() => import("./pages/LearningHomePage"));
-const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage"));
-const LessonPage = lazy(() => import("./pages/LessonPage"));
-const ArticlePage = lazy(() => import("./pages/ArticlePage"));
-const PaymentConfirmationPage = lazy(
-  () => import("./pages/PaymentConfirmationPage"),
+// Use named imports to fix Fast Refresh issue
+const LearningLayout = lazy(() =>
+  import("./components/LearningLayout").then((module) => ({
+    default: module.default,
+  })),
 );
-const MyCoursesPage = lazy(() => import("./pages/MyCoursesPage"));
-const AdminPaymentVerificationPage = lazy(
-  () => import("./pages/AdminPaymentVerificationPage"),
+const LearningHomePage = lazy(() =>
+  import("./pages/LearningHomePage").then((module) => ({
+    default: module.default,
+  })),
+);
+const CourseDetailPage = lazy(() =>
+  import("./pages/CourseDetailPage").then((module) => ({
+    default: module.default,
+  })),
+);
+const LessonPage = lazy(() =>
+  import("./pages/LessonPage").then((module) => ({ default: module.default })),
+);
+const ArticlePage = lazy(() =>
+  import("./pages/ArticlePage").then((module) => ({ default: module.default })),
+);
+const PaymentConfirmationPage = lazy(() =>
+  import("./pages/PaymentConfirmationPage").then((module) => ({
+    default: module.default,
+  })),
+);
+const MyCoursesPage = lazy(() =>
+  import("./pages/MyCoursesPage").then((module) => ({
+    default: module.default,
+  })),
+);
+const AdminPaymentVerificationPage = lazy(() =>
+  import("./pages/AdminPaymentVerificationPage").then((module) => ({
+    default: module.default,
+  })),
+);
+const QuizEditorPage = lazy(() =>
+  import("./pages/QuizEditorPage").then((module) => ({
+    default: module.default,
+  })),
 );
 
 export const learningRoutes: RouteObject[] = [
@@ -26,6 +56,7 @@ export const learningRoutes: RouteObject[] = [
       { path: "payment/:enrollmentId", element: <PaymentConfirmationPage /> },
       { path: "my-courses", element: <MyCoursesPage /> },
       { path: "admin/payments", element: <AdminPaymentVerificationPage /> },
+      { path: "admin/lesson/:lessonId/quiz", element: <QuizEditorPage /> },
     ],
   },
 ];

@@ -2,110 +2,98 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
-  Users,
+  LayoutDashboard,
   Shield,
-  Settings,
-  BarChart2,
+  CreditCard,
+  Users,
+  BookOpen,
   MessageSquare,
   ShoppingBag,
-  BookOpen,
+  Settings,
   Home,
-  Bell,
 } from "lucide-react";
-
-const menuItems = [
-  {
-    title: "Dashboard",
-    href: "/admin",
-    icon: <BarChart2 className="h-5 w-5" />,
-    exact: true,
-  },
-  {
-    title: "User Management",
-    href: "/admin/users",
-    icon: <Users className="h-5 w-5" />,
-  },
-  {
-    title: "Content Moderation",
-    href: "/admin/moderation",
-    icon: <Shield className="h-5 w-5" />,
-  },
-  {
-    title: "Forum Management",
-    href: "/admin/forum",
-    icon: <MessageSquare className="h-5 w-5" />,
-  },
-  {
-    title: "Marketplace Management",
-    href: "/admin/marketplace",
-    icon: <ShoppingBag className="h-5 w-5" />,
-  },
-  {
-    title: "Learning Management",
-    href: "/admin/learning",
-    icon: <BookOpen className="h-5 w-5" />,
-  },
-  {
-    title: "Notifications",
-    href: "/admin/notifications",
-    icon: <Bell className="h-5 w-5" />,
-  },
-  {
-    title: "Settings",
-    href: "/admin/settings",
-    icon: <Settings className="h-5 w-5" />,
-  },
-];
 
 export default function AdminSidebar() {
   const location = useLocation();
 
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const navItems = [
+    {
+      name: "Dashboard",
+      path: "/admin",
+      icon: <LayoutDashboard className="h-5 w-5 mr-3" />,
+    },
+    {
+      name: "Content Moderation",
+      path: "/admin?tab=moderation",
+      icon: <Shield className="h-5 w-5 mr-3" />,
+    },
+    {
+      name: "Transaction Verification",
+      path: "/admin?tab=transactions",
+      icon: <CreditCard className="h-5 w-5 mr-3" />,
+    },
+    {
+      name: "Membership Management",
+      path: "/admin?tab=membership",
+      icon: <Users className="h-5 w-5 mr-3" />,
+    },
+    {
+      name: "Learning Platform",
+      path: "/admin?tab=learning",
+      icon: <BookOpen className="h-5 w-5 mr-3" />,
+    },
+    {
+      name: "Forum Management",
+      path: "/admin/forum",
+      icon: <MessageSquare className="h-5 w-5 mr-3" />,
+    },
+    {
+      name: "Marketplace Management",
+      path: "/admin/marketplace",
+      icon: <ShoppingBag className="h-5 w-5 mr-3" />,
+    },
+    {
+      name: "Settings",
+      path: "/admin/settings",
+      icon: <Settings className="h-5 w-5 mr-3" />,
+    },
+  ];
+
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 overflow-y-auto">
-      <div className="p-6">
-        <Link to="/" className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-purple-700" />
-          <span className="text-xl font-bold text-purple-800">Scentrium</span>
-        </Link>
-        <p className="text-sm text-gray-500 mt-1">Admin Panel</p>
+    <div className="w-64 bg-purple-900 text-white p-4 min-h-screen">
+      <div className="flex items-center gap-2 mb-8 px-4">
+        <Shield className="h-6 w-6" />
+        <h2 className="text-xl font-bold">Admin Panel</h2>
       </div>
-
-      <nav className="mt-2">
-        <ul className="space-y-1 px-2">
-          {menuItems.map((item) => {
-            const isActive = item.exact
-              ? location.pathname === item.href
-              : location.pathname.startsWith(item.href);
-
-            return (
-              <li key={item.href}>
-                <Link
-                  to={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-purple-50 text-purple-700"
-                      : "text-gray-700 hover:bg-gray-100",
-                  )}
-                >
-                  {React.cloneElement(item.icon, {
-                    className: cn(
-                      "h-5 w-5",
-                      isActive ? "text-purple-700" : "text-gray-500",
-                    ),
-                  })}
-                  {item.title}
-                </Link>
-              </li>
-            );
-          })}
+      <nav>
+        <ul className="space-y-1">
+          {navItems.map((item) => (
+            <li key={item.path}>
+              <Link
+                to={item.path}
+                className={cn(
+                  "flex items-center py-2 px-4 rounded-md transition-colors",
+                  isActive(item.path)
+                    ? "bg-purple-800 text-white"
+                    : "text-purple-100 hover:bg-purple-800/50",
+                )}
+              >
+                {item.icon}
+                {item.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
 
       <div className="p-6 mt-6">
         <Link
           to="/"
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-purple-700"
+          className="flex items-center gap-2 text-sm text-purple-100 hover:text-white"
         >
           <Home className="h-4 w-4" />
           <span>Back to Home</span>

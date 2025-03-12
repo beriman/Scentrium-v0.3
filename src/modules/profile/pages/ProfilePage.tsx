@@ -5,12 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ShieldCheck, Edit, User, Mail, Calendar } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MessageSquare, Award, BookOpen, Clock } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, profile } = useAuth();
   const [showSetup2FA, setShowSetup2FA] = useState(false);
+  const { userId } = useParams<{ userId: string }>();
+  const [activeTab, setActiveTab] = useState("activity");
 
   if (!user) {
     return (
@@ -26,10 +30,45 @@ export default function ProfilePage() {
   const isBusinessAccount = profile?.membership_type === "business";
   const has2FAEnabled = profile?.has_2fa;
 
+  // Mock data for the profile tabs
+  const mockActivities = [
+    {
+      id: 1,
+      type: "forum",
+      title: "Posted in 'Essential Oils Discussion'",
+      content: "Shared experience with lavender essential oil blends",
+      date: "2 days ago",
+    },
+    {
+      id: 2,
+      type: "marketplace",
+      title: "Listed a new product",
+      content: "Woody Elegance EDP - 100ml",
+      date: "1 week ago",
+    },
+  ];
+
+  const mockBadges = [
+    {
+      id: 1,
+      name: "Enthusiast",
+      description: "Reached Level 3",
+      icon: "🌟",
+      date: "2023-08-15",
+    },
+    {
+      id: 2,
+      name: "Top Contributor",
+      description: "Created 50+ helpful forum posts",
+      icon: "🏆",
+      date: "2023-09-10",
+    },
+  ];
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-purple-800 mb-6">My Profile</h1>
+        <h1 className="text-3xl font-bold text-purple-800 mb-6">Profile</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left column - User info */}
@@ -39,11 +78,14 @@ export default function ProfilePage() {
                 <div className="flex flex-col items-center text-center">
                   <Avatar className="h-24 w-24 mb-4 border-4 border-purple-100">
                     <AvatarImage
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
-                      alt={user.email || ""}
+                      src={
+                        profile?.avatar_url ||
+                        `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`
+                      }
+                      alt={profile?.full_name || user.email || ""}
                     />
                     <AvatarFallback>
-                      {user.email?.[0].toUpperCase()}
+                      {profile?.full_name?.[0] || user.email?.[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
 
@@ -63,6 +105,16 @@ export default function ProfilePage() {
                     <Link to="/profile/edit">
                       <Button variant="outline" className="w-full">
                         <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                      </Button>
+                    </Link>
+                  </div>
+
+                  <div className="mt-2 w-full">
+                    <Link to="/profile/membership">
+                      <Button className="w-full bg-purple-700 hover:bg-purple-800">
+                        {isBusinessAccount
+                          ? "Manage Membership"
+                          : "Upgrade to Business"}
                       </Button>
                     </Link>
                   </div>
@@ -161,6 +213,71 @@ export default function ProfilePage() {
                 </div>
               </CardContent>
             </Card>
+
+            <div className="mt-6">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+                  <TabsTrigger value="badges">
+                    Badges & Achievements
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="activity" className="mt-6">
+                  <div className="space-y-4">
+                    {mockActivities.map((activity) => (
+                      <Card key={activity.id}>
+                        <CardContent className="p-4 flex items-start gap-4">
+                          <div className="rounded-full p-2 bg-purple-100 text-purple-800">
+                            {activity.type === "forum" ? (
+                              <MessageSquare className="h-5 w-5" />
+                            ) : activity.type === "marketplace" ? (
+                              <Award className="h-5 w-5" />
+                            ) : (
+                              <BookOpen className="h-5 w-5" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex justify-between">
+                              <h3 className="font-medium">{activity.title}</h3>
+                              <span className="text-sm text-gray-500 flex items-center">
+                                <Clock className="h-3 w-3 mr-1" />{" "}
+                                {activity.date}
+                              </span>
+                            </div>
+                            <p className="text-gray-600">{activity.content}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="badges" className="mt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {mockBadges.map((badge) => (
+                      <Card key={badge.id}>
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className="text-4xl">{badge.icon}</div>
+                          <div>
+                            <h3 className="font-medium">{badge.name}</h3>
+                            <p className="text-sm text-gray-600">
+                              {badge.description}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Earned on{" "}
+                              {new Date(badge.date).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
         </div>
       </div>

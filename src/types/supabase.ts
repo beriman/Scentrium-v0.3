@@ -69,6 +69,141 @@ export type Database = {
         }
         Relationships: []
       }
+      business_calculations: {
+        Row: {
+          created_at: string | null
+          id: string
+          ingredients: Json
+          labor_cost: number
+          overhead_cost: number
+          packaging_cost: number
+          product_name: string
+          product_size: number
+          product_unit: string
+          result: Json
+          target_margin: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          ingredients: Json
+          labor_cost: number
+          overhead_cost: number
+          packaging_cost: number
+          product_name: string
+          product_size: number
+          product_unit: string
+          result: Json
+          target_margin: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          ingredients?: Json
+          labor_cost?: number
+          overhead_cost?: number
+          packaging_cost?: number
+          product_name?: string
+          product_size?: number
+          product_unit?: string
+          result?: Json
+          target_margin?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      business_financial_records: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          record_date: string
+          record_type: string
+          reference_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          record_date: string
+          record_type: string
+          reference_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          record_date?: string
+          record_type?: string
+          reference_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      business_inventory: {
+        Row: {
+          category: string
+          cost_per_unit: number
+          created_at: string | null
+          id: string
+          last_restock_date: string | null
+          name: string
+          notes: string | null
+          quantity: number
+          reorder_point: number | null
+          supplier: string | null
+          unit: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          cost_per_unit: number
+          created_at?: string | null
+          id?: string
+          last_restock_date?: string | null
+          name: string
+          notes?: string | null
+          quantity: number
+          reorder_point?: number | null
+          supplier?: string | null
+          unit: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          cost_per_unit?: number
+          created_at?: string | null
+          id?: string
+          last_restock_date?: string | null
+          name?: string
+          notes?: string | null
+          quantity?: number
+          reorder_point?: number | null
+          supplier?: string | null
+          unit?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       forum_replies: {
         Row: {
           author_id: string
@@ -571,6 +706,150 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_quiz_attempts: {
+        Row: {
+          answers: Json | null
+          course_id: string
+          created_at: string | null
+          id: string
+          lesson_id: string
+          passed: boolean | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json | null
+          course_id: string
+          created_at?: string | null
+          id?: string
+          lesson_id: string
+          passed?: boolean | null
+          score: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json | null
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          lesson_id?: string
+          passed?: boolean | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_quiz_attempts_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "learning_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_quiz_attempts_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "learning_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_quiz_questions: {
+        Row: {
+          correct_answer: number
+          course_id: string
+          created_at: string | null
+          explanation: string | null
+          id: string
+          lesson_id: string
+          options: string[]
+          order: number | null
+          question: string
+          updated_at: string | null
+        }
+        Insert: {
+          correct_answer: number
+          course_id: string
+          created_at?: string | null
+          explanation?: string | null
+          id?: string
+          lesson_id: string
+          options: string[]
+          order?: number | null
+          question: string
+          updated_at?: string | null
+        }
+        Update: {
+          correct_answer?: number
+          course_id?: string
+          created_at?: string | null
+          explanation?: string | null
+          id?: string
+          lesson_id?: string
+          options?: string[]
+          order?: number | null
+          question?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_quiz_questions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "learning_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_quiz_questions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "learning_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_time_tracking: {
+        Row: {
+          course_id: string
+          created_at: string | null
+          duration: number
+          id: string
+          lesson_id: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string | null
+          duration: number
+          id?: string
+          lesson_id: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string | null
+          duration?: number
+          id?: string
+          lesson_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_time_tracking_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "learning_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_time_tracking_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "learning_lessons"
             referencedColumns: ["id"]
           },
         ]
@@ -1205,6 +1484,74 @@ export type Database = {
           },
           {
             foreignKeyName: "user_learning_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notifications: {
+        Row: {
+          course_id: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          order_id: string | null
+          reference_id: string | null
+          thread_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          order_id?: string | null
+          reference_id?: string | null
+          thread_id?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          order_id?: string | null
+          reference_id?: string | null
+          thread_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "learning_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
