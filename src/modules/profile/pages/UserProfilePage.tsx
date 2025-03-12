@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../../supabase/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,11 +18,34 @@ import {
   Edit,
   Image,
   Shield,
+  Star,
+  Award,
+  Bell,
+  UserPlus,
+  UserMinus,
 } from "lucide-react";
+import ExperienceBar from "@/components/gamification/ExperienceBar";
+import BadgeDisplay from "@/components/gamification/BadgeDisplay";
+import LevelUpModal from "@/components/gamification/LevelUpModal";
+import ExpGainToast from "@/components/gamification/ExpGainToast";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function UserProfilePage() {
   const { user, profile } = useAuth();
   const [isPublic, setIsPublic] = useState(true);
+  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+  const [showExpGainToast, setShowExpGainToast] = useState(false);
+  const { toast } = useToast();
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  // For demo purposes, show level up modal after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLevelUpModal(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Mock data for user profile
   const userData = {
@@ -33,12 +56,10 @@ export default function UserProfilePage() {
     stats: {
       posts: 42,
       exp: 1250,
+      nextLevelExp: 2000,
       level: 4,
-      badges: [
-        { name: "Explorer", icon: <BookOpen className="h-4 w-4" /> },
-        { name: "Contributor", icon: <MessageSquare className="h-4 w-4" /> },
-        { name: "Reviewer", icon: <Star className="h-4 w-4" /> },
-      ],
+      followers: 28,
+      following: 35,
     },
     activities: [
       {
@@ -110,6 +131,83 @@ export default function UserProfilePage() {
     ],
   };
 
+  // Mock badges data
+  const userBadges = [
+    {
+      id: "1",
+      name: "Explorer",
+      description: "Reached Level 2 and explored all sections of the platform",
+      icon: "book",
+      color: "blue",
+      earned: true,
+      earnedDate: "2023-05-15T10:30:00Z",
+    },
+    {
+      id: "2",
+      name: "Contributor",
+      description: "Created 10+ forum posts that received upvotes",
+      icon: "message",
+      color: "green",
+      earned: true,
+      earnedDate: "2023-06-20T14:45:00Z",
+    },
+    {
+      id: "3",
+      name: "Reviewer",
+      description: "Posted 5+ detailed fragrance reviews",
+      icon: "star",
+      color: "yellow",
+      earned: true,
+      earnedDate: "2023-07-05T09:15:00Z",
+    },
+    {
+      id: "4",
+      name: "Merchant",
+      description: "Sold 5+ items in the marketplace",
+      icon: "trending",
+      color: "purple",
+      earned: true,
+      earnedDate: "2023-08-12T16:30:00Z",
+    },
+    {
+      id: "5",
+      name: "Scholar",
+      description: "Completed 3+ learning courses",
+      icon: "award",
+      color: "indigo",
+      earned: false,
+    },
+    {
+      id: "6",
+      name: "Perfumer",
+      description: "Shared an original perfume formula",
+      icon: "crown",
+      color: "pink",
+      earned: false,
+    },
+    {
+      id: "7",
+      name: "Moderator",
+      description: "Helped moderate the community",
+      icon: "shield",
+      color: "red",
+      earned: false,
+    },
+  ];
+
+  // New badges for level up modal
+  const newBadges = [
+    {
+      id: "8",
+      name: "Expert",
+      description: "Reached Level 4 and demonstrated expertise",
+      icon: "crown",
+      color: "purple",
+      earned: true,
+      earnedDate: new Date().toISOString(),
+    },
+  ];
+
   // Check if user is logged in
   if (!user) {
     return (
@@ -123,6 +221,22 @@ export default function UserProfilePage() {
   }
 
   const isBusiness = profile?.membership_type === "business";
+
+  const handleFollowToggle = () => {
+    setIsFollowing(!isFollowing);
+    toast({
+      title: isFollowing ? "Unfollowed" : "Following",
+      description: isFollowing
+        ? `You are no longer following ${userData.username}`
+        : `You are now following ${userData.username}`,
+    });
+
+    if (!isFollowing) {
+      // Show EXP gain toast when following someone
+      setShowExpGainToast(true);
+      setTimeout(() => setShowExpGainToast(false), 3000);
+    }
+  };
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -161,16 +275,54 @@ export default function UserProfilePage() {
                   <h2 className="text-2xl font-bold">{userData.username}</h2>
                   <p className="text-gray-500">{user.email}</p>
                 </div>
-                <Link to="/profile/edit">
-                  <Button variant="outline" size="sm">
-                    <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                <div className="flex gap-2">
+                  <Button
+                    variant={isFollowing ? "outline" : "default"}
+                    size="sm"
+                    onClick={handleFollowToggle}
+                    className={
+                      isFollowing
+                        ? "border-red-200 text-red-700"
+                        : "bg-purple-700 hover:bg-purple-800"
+                    }
+                  >
+                    {isFollowing ? (
+                      <>
+                        <UserMinus className="mr-2 h-4 w-4" /> Unfollow
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="mr-2 h-4 w-4" /> Follow
+                      </>
+                    )}
                   </Button>
-                </Link>
+                  <Link to="/profile/edit">
+                    <Button variant="outline" size="sm">
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </Button>
+                  </Link>
+                </div>
               </div>
 
-              <Badge className={isBusiness ? "bg-purple-700" : "bg-blue-600"}>
-                {isBusiness ? "Business Account" : "Free Account"}
-              </Badge>
+              <div className="flex items-center gap-2 mb-4">
+                <Badge className={isBusiness ? "bg-purple-700" : "bg-blue-600"}>
+                  {isBusiness ? "Business Account" : "Free Account"}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="bg-yellow-50 text-yellow-800 border-yellow-200"
+                >
+                  <Award className="mr-1 h-3 w-3" /> Level{" "}
+                  {userData.stats.level}: Expert
+                </Badge>
+              </div>
+
+              <ExperienceBar
+                currentExp={userData.stats.exp}
+                nextLevelExp={userData.stats.nextLevelExp}
+                level={userData.stats.level}
+                className="mb-4"
+              />
 
               <Separator className="my-4" />
 
@@ -182,42 +334,37 @@ export default function UserProfilePage() {
 
                 <div>
                   <h3 className="font-medium mb-2">Stats</h3>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-purple-50 rounded-lg p-3">
-                      <div className="text-xl font-bold text-purple-700">
+                  <div className="grid grid-cols-4 gap-2 text-center">
+                    <div className="bg-purple-50 rounded-lg p-2">
+                      <div className="text-lg font-bold text-purple-700">
                         {userData.stats.posts}
                       </div>
                       <div className="text-xs text-gray-500">Posts</div>
                     </div>
-                    <div className="bg-purple-50 rounded-lg p-3">
-                      <div className="text-xl font-bold text-purple-700">
+                    <div className="bg-purple-50 rounded-lg p-2">
+                      <div className="text-lg font-bold text-purple-700">
                         {userData.stats.exp}
                       </div>
                       <div className="text-xs text-gray-500">EXP</div>
                     </div>
-                    <div className="bg-purple-50 rounded-lg p-3">
-                      <div className="text-xl font-bold text-purple-700">
-                        {userData.stats.level}
+                    <div className="bg-purple-50 rounded-lg p-2">
+                      <div className="text-lg font-bold text-purple-700">
+                        {userData.stats.followers}
                       </div>
-                      <div className="text-xs text-gray-500">Level</div>
+                      <div className="text-xs text-gray-500">Followers</div>
+                    </div>
+                    <div className="bg-purple-50 rounded-lg p-2">
+                      <div className="text-lg font-bold text-purple-700">
+                        {userData.stats.following}
+                      </div>
+                      <div className="text-xs text-gray-500">Following</div>
                     </div>
                   </div>
                 </div>
 
                 <div>
                   <h3 className="font-medium mb-2">Badges</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {userData.stats.badges.map((badge, index) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="flex items-center gap-1 py-1 px-2"
-                      >
-                        {badge.icon}
-                        {badge.name}
-                      </Badge>
-                    ))}
-                  </div>
+                  <BadgeDisplay badges={userBadges} maxDisplay={4} />
                 </div>
 
                 <div>
@@ -248,8 +395,9 @@ export default function UserProfilePage() {
         {/* Right Column - Tabs */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="activity">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="badges">Badges</TabsTrigger>
               <TabsTrigger value="upgrade">Upgrade Membership</TabsTrigger>
             </TabsList>
 
@@ -276,6 +424,133 @@ export default function UserProfilePage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="badges" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Badges & Achievements</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-medium mb-3">Earned Badges</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {userBadges
+                          .filter((badge) => badge.earned)
+                          .map((badge) => (
+                            <div
+                              key={badge.id}
+                              className="flex items-start gap-3 p-3 border rounded-md"
+                            >
+                              <div
+                                className={`p-2 rounded-full bg-${badge.color}-100`}
+                              >
+                                {badge.icon === "book" && (
+                                  <BookOpen
+                                    className={`h-5 w-5 text-${badge.color}-600`}
+                                  />
+                                )}
+                                {badge.icon === "message" && (
+                                  <MessageSquare
+                                    className={`h-5 w-5 text-${badge.color}-600`}
+                                  />
+                                )}
+                                {badge.icon === "star" && (
+                                  <Star
+                                    className={`h-5 w-5 text-${badge.color}-600`}
+                                  />
+                                )}
+                                {badge.icon === "trending" && (
+                                  <ShoppingBag
+                                    className={`h-5 w-5 text-${badge.color}-600`}
+                                  />
+                                )}
+                                {badge.icon === "award" && (
+                                  <Award
+                                    className={`h-5 w-5 text-${badge.color}-600`}
+                                  />
+                                )}
+                                {badge.icon === "crown" && (
+                                  <Crown
+                                    className={`h-5 w-5 text-${badge.color}-600`}
+                                  />
+                                )}
+                                {badge.icon === "shield" && (
+                                  <Shield
+                                    className={`h-5 w-5 text-${badge.color}-600`}
+                                  />
+                                )}
+                              </div>
+                              <div>
+                                <h4 className="font-medium">{badge.name}</h4>
+                                <p className="text-sm text-gray-600">
+                                  {badge.description}
+                                </p>
+                                {badge.earnedDate && (
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    Earned on{" "}
+                                    {new Date(
+                                      badge.earnedDate,
+                                    ).toLocaleDateString()}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div>
+                      <h3 className="font-medium mb-3">Badges to Earn</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {userBadges
+                          .filter((badge) => !badge.earned)
+                          .map((badge) => (
+                            <div
+                              key={badge.id}
+                              className="flex items-start gap-3 p-3 border rounded-md bg-gray-50"
+                            >
+                              <div className="p-2 rounded-full bg-gray-200">
+                                {badge.icon === "book" && (
+                                  <BookOpen className="h-5 w-5 text-gray-400" />
+                                )}
+                                {badge.icon === "message" && (
+                                  <MessageSquare className="h-5 w-5 text-gray-400" />
+                                )}
+                                {badge.icon === "star" && (
+                                  <Star className="h-5 w-5 text-gray-400" />
+                                )}
+                                {badge.icon === "trending" && (
+                                  <ShoppingBag className="h-5 w-5 text-gray-400" />
+                                )}
+                                {badge.icon === "award" && (
+                                  <Award className="h-5 w-5 text-gray-400" />
+                                )}
+                                {badge.icon === "crown" && (
+                                  <Crown className="h-5 w-5 text-gray-400" />
+                                )}
+                                {badge.icon === "shield" && (
+                                  <Shield className="h-5 w-5 text-gray-400" />
+                                )}
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-500">
+                                  {badge.name}
+                                </h4>
+                                <p className="text-sm text-gray-500">
+                                  {badge.description}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -361,21 +636,22 @@ export default function UserProfilePage() {
           </Tabs>
         </div>
       </div>
+
+      {/* Level Up Modal */}
+      <LevelUpModal
+        open={showLevelUpModal}
+        onClose={() => setShowLevelUpModal(false)}
+        newLevel={4}
+        newBadges={newBadges}
+      />
+
+      {/* EXP Gain Toast */}
+      <ExpGainToast
+        expGained={5}
+        action="Following a user"
+        open={showExpGainToast}
+        onOpenChange={setShowExpGainToast}
+      />
     </div>
   );
 }
-
-const Star = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
-);

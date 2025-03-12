@@ -7,14 +7,25 @@ import {
   Award,
   Clock,
   ThumbsUp,
+  Bell,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FORUM_CATEGORIES } from "./CategorySelector";
 import ForumStats from "./ForumStats";
+import SearchBar from "@/components/forum/SearchBar";
 
 export default function ForumSidebar() {
+  const handleSearch = (query: string) => {
+    // In a real app, this would navigate to search results page
+    window.location.href = `/forum/search?q=${encodeURIComponent(query)}`;
+  };
+
   return (
     <div className="space-y-6">
+      <div className="mb-4">
+        <SearchBar onSearch={handleSearch} />
+      </div>
+
       <Link to="/forum/new">
         <Button className="w-full bg-purple-700 hover:bg-purple-800">
           <PlusCircle className="mr-2 h-4 w-4" /> Buat Thread Baru
@@ -93,6 +104,20 @@ export default function ForumSidebar() {
             >
               <MessageSquare className="mr-2 h-4 w-4" />
               Balasan Saya
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/forum/notifications"
+              className="text-gray-600 hover:text-purple-700 flex items-center justify-between"
+            >
+              <div className="flex items-center">
+                <Bell className="mr-2 h-4 w-4" />
+                Notifikasi
+              </div>
+              <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                3
+              </span>
             </Link>
           </li>
         </ul>
