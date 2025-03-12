@@ -11,13 +11,51 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { error } = await supabase.auth.getSession();
+      try {
+        const { data, error } = await supabase.auth.getSession();
 
-      if (error) {
-        setError(error.message);
-      } else {
-        // Redirect to profile page after successful OAuth sign-in
-        navigate("/profile");
+        if (error) {
+          setError(error.message);
+          return;
+        }
+
+        if (data?.session) {
+          // Check if user profile exists, if not create one
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData?.user) {
+            const { data: profileData, error: profileError } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("id", userData.user.id)
+              .single();
+
+            if (profileError && profileError.code === "PGRST116") {
+              // Profile doesn't exist, create one
+              const { error: insertError } = await supabase
+                .from("profiles")
+                .insert([
+                  {
+                    id: userData.user.id,
+                    full_name:
+                      userData.user.user_metadata.full_name ||
+                      userData.user.user_metadata.name ||
+                      "User",
+                    email: userData.user.email,
+                    membership_type: "free",
+                  },
+                ]);
+
+              if (insertError) {
+                console.error("Error creating profile:", insertError);
+              }
+            }
+          }
+
+          // Redirect to profile page after successful OAuth sign-in
+          navigate("/profile");
+        }
+      } catch (err: any) {
+        setError(err.message || "An error occurred during authentication");
       }
     };
 
