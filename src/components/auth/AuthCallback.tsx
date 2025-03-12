@@ -41,7 +41,9 @@ export default function AuthCallback() {
                       userData.user.user_metadata.name ||
                       "User",
                     email: userData.user.email,
+                    avatar_url: userData.user.user_metadata.avatar_url || null,
                     membership_type: "free",
+                    has_2fa: false,
                   },
                 ]);
 

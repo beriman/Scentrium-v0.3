@@ -174,6 +174,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         provider,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
         },
       });
 
