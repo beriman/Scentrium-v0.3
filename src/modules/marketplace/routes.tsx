@@ -7,6 +7,9 @@ const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage"));
 const ListItemPage = lazy(() => import("./pages/ListItemPage"));
 const SellerDashboardPage = lazy(() => import("./pages/SellerDashboardPage"));
 const AddProductPage = lazy(() => import("./pages/AddProductPage"));
+const MyOrdersPage = lazy(() => import("./pages/MyOrdersPage"));
+const OrderDetailsPage = lazy(() => import("./pages/OrderDetailsPage"));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 
 export const marketplaceRoutes: RouteObject[] = [
   {
@@ -18,6 +21,9 @@ export const marketplaceRoutes: RouteObject[] = [
       { path: "list", element: <ListItemPage /> },
       { path: "lapak", element: <SellerDashboardPage /> },
       { path: "lapak/add", element: <AddProductPage /> },
+      { path: "my-orders", element: <MyOrdersPage /> },
+      { path: "order/:orderId", element: <OrderDetailsPage /> },
+      { path: "checkout/:productId/:quantity", element: <CheckoutPage /> },
     ],
   },
 ];
