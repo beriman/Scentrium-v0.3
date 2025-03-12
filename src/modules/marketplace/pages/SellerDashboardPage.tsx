@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -40,11 +40,8 @@ import {
   ArrowDown,
   Eye,
   AlertCircle,
-  ChevronRight,
-  Filter,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import TopNavbar from "@/components/shared/TopNavbar";
 
 // Mock product data
 const sellerProducts = [
@@ -232,16 +229,6 @@ const formatPrice = (price: number) => {
 export default function SellerDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("products");
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading data
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   // Filter products based on search query
   const filteredProducts = sellerProducts.filter(
@@ -264,175 +251,332 @@ export default function SellerDashboardPage() {
     (p) => p.status === "active",
   ).length;
 
-  // Mobile product card component
-  const ProductCard = ({ product }: { product: typeof sellerProducts[0] }) => (
-    <Card className="mb-4">
-      <CardContent className="p-4">
-        <div className="flex gap-3">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="h-16 w-16 rounded-md object-cover"
-          />
-          <div className="flex-1">
-            <h3 className="font-medium text-sm line-clamp-2">{product.name}</h3>
-            <div className="text-xs text-gray-500 mt-1">
-              {product.brand} · {product.size}
-            </div>
-            <div className="flex justify-between items-center mt-2">
-              <span className="font-semibold text-sm">{formatPrice(product.price)}</span>
-              {product.status === "active" ? (
-                <Badge
-                  variant="outline"
-                  className="bg-green-50 text-green-700 border-green-200 text-xs"
-                >
-                  Aktif
-                </Badge>
-              ) : (
-                <Badge
-                  variant="outline"
-                  className="bg-red-50 text-red-700 border-red-200 text-xs"
-                >
-                  Stok Habis
-                </Badge>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between items-center mt-3 pt-3 border-t text-xs text-gray-500">
-          <div>Stok: <span className={product.stock === 0 ? "text-red-500 font-medium" : ""}>{product.stock}</span></div>
-          <div>Terjual: {product.sales}</div>
-          <div>Dilihat: {product.views}</div>
-        </div>
-        <div className="flex gap-2 mt-3">
-          <Button variant="outline" size="sm" className="flex-1 h-8">
-            <Edit className="h-3.5 w-3.5 mr-1" /> Edit
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1 h-8">
-            <Trash2 className="h-3.5 w-3.5 mr-1" /> Hapus
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  // Mobile order card component
-  const OrderCard = ({ order }: { order: typeof orders[0] }) => (
-    <Card className="mb-4">
-      <CardContent className="p-4">
-        <div className="flex justify-between items-start">
-          <div>
-            <div className="font-medium text-sm">{order.id}</div>
-            <div className="text-xs text-gray-500 mt-1">{order.date}</div>
-          </div>
-          {order.status === "pending" && (
-            <Badge
-              variant="outline"
-              className="bg-yellow-50 text-yellow-700 border-yellow-200 text-xs"
-            >
-              Menunggu Pembayaran
-            </Badge>
-          )}
-          {order.status === "paid" && (
-            <Badge
-              variant="outline"
-              className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
-            >
-              Dibayar
-            </Badge>
-          )}
-          {order.status === "shipped" && (
-            <Badge
-              variant="outline"
-              className="bg-purple-50 text-purple-700 border-purple-200 text-xs"
-            >
-              Dikirim
-            </Badge>
-          )}
-          {order.status === "delivered" && (
-            <Badge
-              variant="outline"
-              className="bg-green-50 text-green-700 border-green-200 text-xs"
-            >
-              Selesai
-            </Badge>
-          )}
-        </div>
-        <div className="mt-3 pt-3 border-t">
-          <div className="text-sm font-medium">{order.product}</div>
-          <div className="flex justify-between items-center mt-1">
-            <div className="text-xs text-gray-500">Pembeli: {order.customer}</div>
-            <div className="text-xs text-gray-500">Jumlah: {order.quantity}</div>
-          </div>
-          <div className="font-semibold text-sm mt-2">{formatPrice(order.total)}</div>
-        </div>
-        <div className="mt-3">
-          <Button variant="outline" size="sm" className="w-full h-8">
-            Lihat Detail <ChevronRight className="h-3.5 w-3.5 ml-1" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  // Mobile review card component
-  const ReviewCard = ({ review }: { review: typeof reviews[0] }) => (
-    <Card className="mb-4">
-      <CardContent className="p-4">
-        <div className="flex justify-between items-start">
-          <div>
-            <div className="font-medium text-sm">{review.customer}</div>
-            <div className="text-xs text-gray-500 mt-1">{review.date}</div>
-          </div>
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-3.5 w-3.5 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="mt-3 pt-3 border-t">
-          <div className="text-xs text-gray-500 mb-1">Produk: {review.product}</div>
-          <div className="text-sm text-gray-600">{review.comment}</div>
-        </div>
-        <div className="mt-3 flex justify-end">
-          <Button variant="outline" size="sm" className="h-8">
-            Balas
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <TopNavbar />
-        <div className="container mx-auto py-4 md:py-8 px-4">
-          <div className="flex justify-center items-center h-64">
-            <p>Loading...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <TopNavbar />
-      <div className="container mx-auto py-4 md:py-8 px-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-purple-800">Lapak Saya</h2>
-          <Link to="/marketplace/lapak/add">
-            <Button className="bg-purple-700 hover:bg-purple-800 w-full md:w-auto">
-              <Plus className="mr-2 h-4 w-4" /> Tambah Produk
-            </Button>
-          </Link>
-        </div>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-purple-800">Lapak Saya</h2>
+        <Link to="/marketplace/lapak/add">
+          <Button className="bg-purple-700 hover:bg-purple-800">
+            <Plus className="mr-2 h-4 w-4" /> Tambah Produk
+          </Button>
+        </Link>
+      </div>
 
-        {/* Statistics cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+      {/* Statistics cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-500">Total Produk</p>
+                <h3 className="text-2xl font-bold">{totalProducts}</h3>
+              </div>
+              <div className="p-3 bg-purple-100 rounded-full">
+                <Package className="h-6 w-6 text-purple-700" />
+              </div>
+            </div>
+            <div className="mt-2 flex items-center text-xs">
+              <Badge variant="outline" className="text-green-600 bg-green-50">
+                <ArrowUp className="h-3 w-3 mr-1" /> {activeProducts} Aktif
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-500">Total Penjualan</p>
+                <h3 className="text-2xl font-bold">{totalSales}</h3>
+              </div>
+              <div className="p-3 bg-blue-100 rounded-full">
+                <ShoppingBag className="h-6 w-6 text-blue-700" />
+              </div>
+            </div>
+            <div className="mt-2 flex items-center text-xs">
+              <Badge variant="outline" className="text-green-600 bg-green-50">
+                <ArrowUp className="h-3 w-3 mr-1" /> 12% dari bulan lalu
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-500">Pendapatan</p>
+                <h3 className="text-2xl font-bold">
+                  {formatPrice(totalRevenue)}
+                </h3>
+              </div>
+              <div className="p-3 bg-green-100 rounded-full">
+                <BarChart2 className="h-6 w-6 text-green-700" />
+              </div>
+            </div>
+            <div className="mt-2 flex items-center text-xs">
+              <Badge variant="outline" className="text-green-600 bg-green-50">
+                <ArrowUp className="h-3 w-3 mr-1" /> 8% dari bulan lalu
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-500">Rating Toko</p>
+                <h3 className="text-2xl font-bold flex items-center">
+                  4.8{" "}
+                  <Star className="h-4 w-4 ml-1 fill-yellow-400 text-yellow-400" />
+                </h3>
+              </div>
+              <div className="p-3 bg-yellow-100 rounded-full">
+                <Star className="h-6 w-6 text-yellow-600" />
+              </div>
+            </div>
+            <div className="mt-2 flex items-center text-xs">
+              <Badge variant="outline" className="text-blue-600 bg-blue-50">
+                {reviews.length} ulasan
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabs for different sections */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="products">Produk</TabsTrigger>
+          <TabsTrigger value="orders">Pesanan</TabsTrigger>
+          <TabsTrigger value="reviews">Ulasan</TabsTrigger>
+        </TabsList>
+
+        {/* Products Tab */}
+        <TabsContent value="products" className="pt-6">
           <Card>
-            <CardContent className="p-3 md:p-6">
+            <CardHeader>
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <CardTitle>Daftar Produk</CardTitle>
+                <div className="relative w-full md:w-64">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Cari produk..."
+                    className="pl-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Produk</TableHead>
+                      <TableHead>Harga</TableHead>
+                      <TableHead>Stok</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Terjual</TableHead>
+                      <TableHead>Dilihat</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredProducts.map((product) => (
+                      <TableRow key={product.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="h-10 w-10 rounded-md object-cover"
+                            />
+                            <div>
+                              <div className="font-medium">{product.name}</div>
+                              <div className="text-xs text-gray-500">
+                                {product.brand} · {product.size}
+                              </div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{formatPrice(product.price)}</TableCell>
+                        <TableCell>
+                          <div
+                            className={`font-medium ${product.stock === 0 ? "text-red-500" : ""}`}
+                          >
+                            {product.stock}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {product.status === "active" ? (
+                            <Badge
+                              variant="outline"
+                              className="bg-green-50 text-green-700 border-green-200"
+                            >
+                              Aktif
+                            </Badge>
+                          ) : (
+                            <Badge
+                              variant="outline"
+                              className="bg-red-50 text-red-700 border-red-200"
+                            >
+                              Stok Habis
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>{product.sales}</TableCell>
+                        <TableCell>{product.views}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="icon">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Orders Tab */}
+        <TabsContent value="orders" className="pt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pesanan Masuk</CardTitle>
+              <CardDescription>Kelola pesanan dari pembeli</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID Pesanan</TableHead>
+                      <TableHead>Pembeli</TableHead>
+                      <TableHead>Produk</TableHead>
+                      <TableHead>Jumlah</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Tanggal</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {orders.map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell className="font-medium">
+                          {order.id}
+                        </TableCell>
+                        <TableCell>{order.customer}</TableCell>
+                        <TableCell>{order.product}</TableCell>
+                        <TableCell>{order.quantity}</TableCell>
+                        <TableCell>{formatPrice(order.total)}</TableCell>
+                        <TableCell>
+                          {order.status === "pending" && (
+                            <Badge
+                              variant="outline"
+                              className="bg-yellow-50 text-yellow-700 border-yellow-200"
+                            >
+                              Menunggu Pembayaran
+                            </Badge>
+                          )}
+                          {order.status === "paid" && (
+                            <Badge
+                              variant="outline"
+                              className="bg-blue-50 text-blue-700 border-blue-200"
+                            >
+                              Dibayar
+                            </Badge>
+                          )}
+                          {order.status === "shipped" && (
+                            <Badge
+                              variant="outline"
+                              className="bg-purple-50 text-purple-700 border-purple-200"
+                            >
+                              Dikirim
+                            </Badge>
+                          )}
+                          {order.status === "delivered" && (
+                            <Badge
+                              variant="outline"
+                              className="bg-green-50 text-green-700 border-green-200"
+                            >
+                              Selesai
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>{order.date}</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="outline" size="sm">
+                            Detail
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Reviews Tab */}
+        <TabsContent value="reviews" className="pt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Ulasan Pembeli</CardTitle>
+              <CardDescription>
+                Lihat dan tanggapi ulasan dari pembeli
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {reviews.map((review) => (
+                  <div key={review.id} className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <div className="font-medium">{review.customer}</div>
+                        <div className="text-sm text-gray-500">
+                          {review.date}
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      {review.comment}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Produk: {review.product}
+                    </div>
+                    <div className="mt-3 flex justify-end">
+                      <Button variant="outline" size="sm">
+                        Balas
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
