@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "../../../supabase/supabase";
 import { Provider } from "@supabase/supabase-js";
+import { oAuthConfig, authErrorHandler } from "@/services/AuthService";
 
 interface OAuthButtonsProps {
   redirectTo?: string;
@@ -16,21 +17,13 @@ export default function OAuthButtons({
 }: OAuthButtonsProps) {
   const handleOAuthLogin = async (provider: Provider) => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
+      const config = oAuthConfig.getProviderConfig(provider, redirectTo);
+      const { error } = await supabase.auth.signInWithOAuth(config);
 
       if (error) throw error;
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error("OAuth error:", error);
+      authErrorHandler.logError("OAuth login", error);
       if (onError) onError(error as Error);
     }
   };

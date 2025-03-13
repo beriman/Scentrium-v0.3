@@ -125,7 +125,6 @@ export default function LandingPage() {
           </nav>
         </div>
       </header>
-
       <main className="pt-20">
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-20">
@@ -182,21 +181,7 @@ export default function LandingPage() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="flex items-center gap-2 pt-6"
-              >
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <Avatar key={i} className="border-2 border-white">
-                      <AvatarImage
-                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=user${i}`}
-                      />
-                    </Avatar>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600">
-                  Join <span className="font-bold text-purple-700">2,000+</span>{" "}
-                  fragrance enthusiasts
-                </p>
-              </motion.div>
+              ></motion.div>
             </div>
 
             <motion.div
@@ -400,7 +385,6 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">

@@ -1,68 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../../supabase/supabase";
 import AuthLayout from "./AuthLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { ProfileService } from "@/services/ProfileService";
+import { useAuthError } from "@/hooks/useAuthError";
 
 export default function AuthCallback() {
-  const [error, setError] = useState<string | null>(null);
+  const { error, isLoading, handleAuthOperation, setError } = useAuthError();
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      try {
+      await handleAuthOperation(async () => {
         const { data, error } = await supabase.auth.getSession();
 
         if (error) {
-          setError(error.message);
-          return;
+          throw error;
         }
 
         if (data?.session) {
           // Check if user profile exists, if not create one
           const { data: userData } = await supabase.auth.getUser();
           if (userData?.user) {
-            const { data: profileData, error: profileError } = await supabase
-              .from("profiles")
-              .select("*")
-              .eq("id", userData.user.id)
-              .single();
-
-            if (profileError && profileError.code === "PGRST116") {
-              // Profile doesn't exist, create one
-              const { error: insertError } = await supabase
-                .from("profiles")
-                .insert([
-                  {
-                    id: userData.user.id,
-                    full_name:
-                      userData.user.user_metadata.full_name ||
-                      userData.user.user_metadata.name ||
-                      "User",
-                    email: userData.user.email,
-                    avatar_url: userData.user.user_metadata.avatar_url || null,
-                    membership_type: "free",
-                    has_2fa: false,
-                  },
-                ]);
-
-              if (insertError) {
-                console.error("Error creating profile:", insertError);
-              }
-            }
+            // Ensure profile exists using the ProfileService
+            await ProfileService.ensureProfileExists(userData.user);
           }
 
           // Redirect to profile page after successful OAuth sign-in
           navigate("/profile");
         }
-      } catch (err: any) {
-        setError(err.message || "An error occurred during authentication");
-      }
+      }, "auth-callback");
     };
 
     handleAuthCallback();
-  }, [navigate]);
+  }, [navigate, handleAuthOperation, setError]);
 
   return (
     <AuthLayout>

@@ -3,6 +3,8 @@ import { User } from "@supabase/supabase-js";
 import type { Provider } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { useNavigate } from "react-router-dom";
+import { ProfileService } from "@/services/ProfileService";
+import { oAuthConfig, authErrorHandler } from "@/services/AuthService";
 
 type AuthContextType = {
   user: User | null;
@@ -83,18 +85,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fullName: string,
     membershipType: string,
   ) => {
-    try {
-      const { error } = await supabase.from("profiles").insert({
-        id: userId,
-        full_name: fullName,
-        membership_type: membershipType,
-        has_2fa: false,
-      });
+    const { error } = await ProfileService.createProfile({
+      id: userId,
+      full_name: fullName,
+      membership_type: membershipType,
+      has_2fa: false,
+    });
 
-      if (error) {
-        console.error("Error creating profile:", error);
-      }
-    } catch (error) {
+    if (error) {
       console.error("Error creating profile:", error);
     }
   };
@@ -170,20 +168,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithProvider = async (provider: Provider) => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
+      const config = oAuthConfig.getProviderConfig(provider);
+      const { error } = await supabase.auth.signInWithOAuth(config);
 
       if (error) throw error;
     } catch (error) {
-      console.error("Error signing in with provider:", error);
+      authErrorHandler.logError("signInWithProvider", error);
     }
   };
 

@@ -13,16 +13,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { useNavigate, Link } from "react-router-dom";
 import AuthLayout from "./AuthLayout";
-import { UserPlus, Check, Loader2 } from "lucide-react";
+import { UserPlus, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [membershipType, setMembershipType] = useState("free");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { signUp, signInWithProvider } = useAuth();
@@ -34,7 +31,7 @@ export default function SignUpForm() {
     setError("");
 
     try {
-      const { error } = await signUp(email, password, fullName, membershipType);
+      const { error } = await signUp(email, password, fullName, "free");
       if (error) {
         setError(error.message || "Error creating account");
       } else {
@@ -147,71 +144,6 @@ export default function SignUpForm() {
                     required
                     className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
                   />
-                </div>
-
-                <div className="space-y-3 pt-2">
-                  <Label>Membership Type</Label>
-                  <RadioGroup
-                    value={membershipType}
-                    onValueChange={setMembershipType}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                  >
-                    <div
-                      className={`border rounded-lg p-4 cursor-pointer ${membershipType === "free" ? "border-purple-500 bg-purple-50" : "border-gray-200"}`}
-                    >
-                      <RadioGroupItem
-                        value="free"
-                        id="free"
-                        className="sr-only"
-                      />
-                      <Label
-                        htmlFor="free"
-                        className="flex items-start cursor-pointer"
-                      >
-                        <div
-                          className={`mr-2 flex h-5 w-5 items-center justify-center rounded-full border ${membershipType === "free" ? "border-purple-500" : "border-gray-300"}`}
-                        >
-                          {membershipType === "free" && (
-                            <Check className="h-3 w-3 text-purple-500" />
-                          )}
-                        </div>
-                        <div>
-                          <div className="font-medium">Free</div>
-                          <div className="text-sm text-gray-500">
-                            Access to community features
-                          </div>
-                        </div>
-                      </Label>
-                    </div>
-
-                    <div
-                      className={`border rounded-lg p-4 cursor-pointer ${membershipType === "business" ? "border-purple-500 bg-purple-50" : "border-gray-200"}`}
-                    >
-                      <RadioGroupItem
-                        value="business"
-                        id="business"
-                        className="sr-only"
-                      />
-                      <Label
-                        htmlFor="business"
-                        className="flex items-start cursor-pointer"
-                      >
-                        <div
-                          className={`mr-2 flex h-5 w-5 items-center justify-center rounded-full border ${membershipType === "business" ? "border-purple-500" : "border-gray-300"}`}
-                        >
-                          {membershipType === "business" && (
-                            <Check className="h-3 w-3 text-purple-500" />
-                          )}
-                        </div>
-                        <div>
-                          <div className="font-medium">Business</div>
-                          <div className="text-sm text-gray-500">
-                            Additional tools for entrepreneurs
-                          </div>
-                        </div>
-                      </Label>
-                    </div>
-                  </RadioGroup>
                 </div>
 
                 {error && <p className="text-sm text-red-500">{error}</p>}
