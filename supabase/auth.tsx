@@ -111,6 +111,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ) => {
     try {
       console.log("Starting signup process for:", email);
+      console.log("Supabase URL:", import.meta.env.VITE_SUPABASE_URL);
+      console.log(
+        "Anon key available:",
+        !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+      );
 
       const { data, error } = await supabase.auth.signUp({
         email,

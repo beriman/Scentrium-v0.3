@@ -37,15 +37,21 @@ export default function SignUpForm() {
     }
 
     try {
+      console.log("Starting signup process with:", { email, fullName });
       const { error } = await signUp(email, password, fullName, "free");
       if (error) {
+        console.error("Signup returned error:", error);
         setError(error.message || "Error creating account");
       } else {
+        console.log("Signup successful, redirecting to login");
         navigate("/login");
       }
     } catch (err: any) {
       console.error("Sign up error:", err);
-      setError(err.message || "Error creating account");
+      setError(
+        err.message ||
+          "Error creating account. Please check your network connection and try again.",
+      );
     } finally {
       setIsLoading(false);
     }
