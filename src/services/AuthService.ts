@@ -19,6 +19,8 @@ export const oAuthConfig = {
           access_type: "offline",
           prompt: "consent",
         },
+        // Google specific client ID from Supabase settings
+        scopes: provider === "google" ? "profile email" : undefined,
       },
     };
   },

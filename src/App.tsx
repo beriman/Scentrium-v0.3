@@ -17,6 +17,7 @@ import { forumRoutes } from "./modules/forum";
 import { marketplaceRoutes } from "./modules/marketplace";
 import { learningRoutes } from "./modules/learning";
 import { businessToolsRoutes } from "./modules/business-tools";
+import { adminRoutes } from "./modules/admin/routes";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -26,7 +27,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
 
   return <>{children}</>;
@@ -90,6 +91,14 @@ function AppRoutes() {
         {businessToolsRoutes.map((route, index) => (
           <Route
             key={`business-${index}`}
+            path={route.path}
+            element={<PrivateRoute>{route.element}</PrivateRoute>}
+          />
+        ))}
+
+        {adminRoutes.map((route, index) => (
+          <Route
+            key={`admin-${index}`}
             path={route.path}
             element={<PrivateRoute>{route.element}</PrivateRoute>}
           />

@@ -11,7 +11,7 @@ interface OAuthButtonsProps {
 }
 
 export default function OAuthButtons({
-  redirectTo = window.location.origin,
+  redirectTo = window.location.origin + "/auth/callback",
   onSuccess,
   onError,
 }: OAuthButtonsProps) {
