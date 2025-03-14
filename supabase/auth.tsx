@@ -85,15 +85,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fullName: string,
     membershipType: string,
   ) => {
-    const { error } = await ProfileService.createProfile({
-      id: userId,
-      full_name: fullName,
-      membership_type: membershipType,
-      has_2fa: false,
-    });
+    try {
+      const { error } = await ProfileService.createProfile({
+        id: userId,
+        full_name: fullName,
+        membership_type: membershipType,
+        has_2fa: false,
+      });
 
-    if (error) {
-      console.error("Error creating profile:", error);
+      if (error) {
+        console.error("Error creating profile:", error);
+        throw error;
+      }
+    } catch (error) {
+      console.error("Error in createProfile:", error);
+      throw error;
     }
   };
 
@@ -104,6 +110,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     membershipType: string,
   ) => {
     try {
+      console.log("Starting signup process for:", email);
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -116,15 +124,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error) {
+        console.error("Supabase auth.signUp error:", error);
         return { error };
       }
 
-      if (data.user) {
+      if (!data || !data.user) {
+        console.error("No user data returned from signUp");
+        return { error: new Error("Failed to create user account") };
+      }
+
+      console.log("User created successfully, creating profile");
+      try {
         await createProfile(data.user.id, fullName, membershipType);
+        console.log("Profile created successfully");
+      } catch (profileError) {
+        console.error("Error creating profile:", profileError);
+        return { error: profileError };
       }
 
       return { error: null };
     } catch (error) {
+      console.error("Unexpected error in signUp:", error);
       return { error };
     }
   };

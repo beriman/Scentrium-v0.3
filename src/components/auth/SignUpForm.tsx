@@ -30,6 +30,12 @@ export default function SignUpForm() {
     setIsLoading(true);
     setError("");
 
+    if (!email || !password || !fullName) {
+      setError("Please fill in all required fields");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { error } = await signUp(email, password, fullName, "free");
       if (error) {
@@ -38,6 +44,7 @@ export default function SignUpForm() {
         navigate("/login");
       }
     } catch (err: any) {
+      console.error("Sign up error:", err);
       setError(err.message || "Error creating account");
     } finally {
       setIsLoading(false);
@@ -146,7 +153,11 @@ export default function SignUpForm() {
                   />
                 </div>
 
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
+                )}
                 <Button
                   type="submit"
                   className="w-full bg-purple-700 hover:bg-purple-800"
