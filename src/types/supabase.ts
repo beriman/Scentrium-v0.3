@@ -204,6 +204,39 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_categories: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       forum_replies: {
         Row: {
           author_id: string
@@ -309,6 +342,7 @@ export type Database = {
           flag_reason: string | null
           id: string
           is_flagged: boolean
+          marketplace_link: string | null
           title: string
           updated_at: string | null
           upvotes: number
@@ -323,6 +357,7 @@ export type Database = {
           flag_reason?: string | null
           id?: string
           is_flagged?: boolean
+          marketplace_link?: string | null
           title: string
           updated_at?: string | null
           upvotes?: number
@@ -337,6 +372,7 @@ export type Database = {
           flag_reason?: string | null
           id?: string
           is_flagged?: boolean
+          marketplace_link?: string | null
           title?: string
           updated_at?: string | null
           upvotes?: number
