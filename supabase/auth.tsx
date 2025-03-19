@@ -21,8 +21,6 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any | null }>;
   updatePassword: (password: string) => Promise<{ error: any | null }>;
-  setup2FA: () => Promise<{ url: string | null; error: any | null }>;
-  verify2FA: (token: string) => Promise<{ error: any | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -165,24 +163,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error };
       }
 
-      // Check if 2FA is required
+      // Redirect to profile page after successful login
       if (data.user) {
-        const { data: profileData } = await supabase
-          .from("profiles")
-          .select("has_2fa, membership_type")
-          .eq("id", data.user.id)
-          .single();
-
-        if (
-          profileData?.has_2fa &&
-          profileData.membership_type === "business"
-        ) {
-          // Redirect to 2FA verification page
-          navigate("/verify-2fa");
-        } else {
-          // Redirect to profile page
-          navigate("/profile");
-        }
+        navigate("/profile");
       }
 
       return { error: null };
@@ -240,55 +223,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const setup2FA = async () => {
-    try {
-      // This is a mock implementation as Supabase doesn't have built-in 2FA
-      // In a real app, you would use a third-party 2FA service or implement your own
-      // For now, we'll just update the profile to indicate 2FA is enabled
-      if (user && profile && profile.membership_type === "business") {
-        const { error } = await supabase
-          .from("profiles")
-          .update({ has_2fa: true })
-          .eq("id", user.id);
-
-        if (error) {
-          return { url: null, error };
-        }
-
-        // In a real implementation, you would return a QR code URL
-        return {
-          url:
-            "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=otpauth://totp/Scentrium:" +
-            user.email,
-          error: null,
-        };
-      }
-
-      return {
-        url: null,
-        error: new Error("User must be logged in and have a business account"),
-      };
-    } catch (error) {
-      return { url: null, error };
-    }
-  };
-
-  const verify2FA = async (token: string) => {
-    try {
-      // This is a mock implementation
-      // In a real app, you would verify the token against the user's secret
-      // For now, we'll just accept any token and redirect to the profile page
-      if (token && token.length === 6) {
-        navigate("/profile");
-        return { error: null };
-      }
-
-      return { error: new Error("Invalid token") };
-    } catch (error) {
-      return { error };
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -301,8 +235,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signOut,
         resetPassword,
         updatePassword,
-        setup2FA,
-        verify2FA,
       }}
     >
       {children}

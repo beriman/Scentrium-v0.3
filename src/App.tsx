@@ -18,6 +18,9 @@ import { marketplaceRoutes } from "./modules/marketplace";
 import { learningRoutes } from "./modules/learning";
 import { businessToolsRoutes } from "./modules/business-tools";
 import { adminRoutes } from "./modules/admin/routes";
+import SeedForumPage from "./modules/forum/pages/SeedForumPage";
+import WireframeGallery from "./components/wireframes/WireframeGallery";
+import ScentriumWireframesStoryboard from "./tempobook/storyboards/267527bc-b2ec-472a-b2d8-270d6f87d0e1";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -37,7 +40,9 @@ function AppRoutes() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<ScentriumWireframesStoryboard />} />
+        <Route path="/wireframes" element={<WireframeGallery />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />

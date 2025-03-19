@@ -12,7 +12,6 @@ export const LoginWireframe = () => {
           Connect with fellow fragrance enthusiasts
         </p>
       </div>
-
       <div className="space-y-4">
         <button className="w-full flex items-center justify-center gap-2 border border-gray-300 p-2 rounded-md hover:bg-gray-50">
           <div className="w-5 h-5 bg-gray-200 rounded-full"></div>
@@ -44,7 +43,6 @@ export const LoginWireframe = () => {
           Sign in with Email
         </button>
       </div>
-
       <div className="mt-4 text-center text-sm">
         <span className="text-gray-600">Don't have an account? </span>
         <span className="text-purple-700">Sign up</span>
@@ -64,7 +62,6 @@ export const SignUpWireframe = () => {
           Create an account to connect with fellow fragrance enthusiasts
         </p>
       </div>
-
       <div className="space-y-4">
         <button className="w-full flex items-center justify-center gap-2 border border-gray-300 p-2 rounded-md hover:bg-gray-50">
           <div className="w-5 h-5 bg-gray-200 rounded-full"></div>
@@ -101,7 +98,6 @@ export const SignUpWireframe = () => {
           Create account with Email
         </button>
       </div>
-
       <div className="mt-4 text-center text-sm">
         <span className="text-gray-600">Already have an account? </span>
         <span className="text-purple-700">Sign in</span>
@@ -121,7 +117,6 @@ export const TwoFactorAuthWireframe = () => {
           Enter the 6-digit code from your authenticator app
         </p>
       </div>
-
       <div className="space-y-6">
         <div className="flex justify-center space-x-2">
           {[...Array(6)].map((_, i) => (
@@ -138,7 +133,6 @@ export const TwoFactorAuthWireframe = () => {
           Verify
         </button>
       </div>
-
       <div className="mt-4 text-center text-sm">
         <span className="text-purple-700">Didn't receive a code?</span>
       </div>
@@ -157,22 +151,12 @@ export default function AuthWireframes() {
           <LoginWireframe />
         </CardContent>
       </Card>
-
       <Card className="overflow-hidden">
         <CardHeader className="bg-purple-50 pb-2">
           <CardTitle className="text-lg">Sign Up Screen</CardTitle>
         </CardHeader>
         <CardContent className="pt-4 md:pt-6 px-2 md:px-6">
           <SignUpWireframe />
-        </CardContent>
-      </Card>
-
-      <Card className="overflow-hidden">
-        <CardHeader className="bg-purple-50 pb-2">
-          <CardTitle className="text-lg">2FA Verification</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-4 md:pt-6 px-2 md:px-6">
-          <TwoFactorAuthWireframe />
         </CardContent>
       </Card>
     </div>

@@ -10,8 +10,6 @@ const ForgotPasswordForm = lazy(
 const ResetPasswordForm = lazy(
   () => import("../../components/auth/ResetPasswordForm"),
 );
-const Setup2FAForm = lazy(() => import("../../components/auth/Setup2FAForm"));
-const Verify2FAForm = lazy(() => import("../../components/auth/Verify2FAForm"));
 const AuthCallback = lazy(() => import("../../components/auth/AuthCallback"));
 
 export const authRoutes: RouteObject[] = [
@@ -22,8 +20,6 @@ export const authRoutes: RouteObject[] = [
       { path: "/signup", element: <SignUpForm /> },
       { path: "/forgot-password", element: <ForgotPasswordForm /> },
       { path: "/reset-password", element: <ResetPasswordForm /> },
-      { path: "/setup-2fa", element: <Setup2FAForm /> },
-      { path: "/verify-2fa", element: <Verify2FAForm /> },
     ],
   },
   { path: "/auth/callback", element: <AuthCallback /> },

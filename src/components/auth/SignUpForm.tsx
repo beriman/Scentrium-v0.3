@@ -37,7 +37,11 @@ export default function SignUpForm() {
     }
 
     try {
-      console.log("Starting signup process with:", { email, fullName });
+      console.log("Starting signup process with:", {
+        email,
+        fullName,
+        membershipType,
+      });
       const { error } = await signUp(email, password, fullName, "free");
       if (error) {
         console.error("Signup returned error:", error);
