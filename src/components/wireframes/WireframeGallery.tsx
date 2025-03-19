@@ -29,11 +29,9 @@ export default function WireframeGallery() {
           Scentrium V 0.3
         </h1>
         <p className="text-sm md:text-base text-gray-600">
-          Visual representation of the platform based on the PRD and mermaid
-          diagram
+          "The Hub for Indonesian Perfumery Enthusiasts"
         </p>
       </div>
-
       {/* Mobile Hamburger Menu */}
       <div className="md:hidden flex justify-between items-center mb-4">
         <button
@@ -47,7 +45,6 @@ export default function WireframeGallery() {
           {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
         </div>
       </div>
-
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
