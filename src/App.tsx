@@ -6,7 +6,7 @@ import SignUpForm from "./components/auth/SignUpForm";
 import Dashboard from "./components/pages/dashboard";
 import Success from "./components/pages/success";
 import Home from "./components/pages/home";
-import { AuthProvider, useAuth } from "../supabase/auth";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import ForgotPasswordForm from "./components/auth/ForgotPasswordForm";
 import ResetPasswordForm from "./components/auth/ResetPasswordForm";
 import Verify2FAForm from "./components/auth/Verify2FAForm";

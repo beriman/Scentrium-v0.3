@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "../../../../supabase/supabase";
-import { useAuth } from "../../../../supabase/auth";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "../../../contexts/AuthContext";
 import { CheckCircle, Clock, BookOpen, Award } from "lucide-react";
 
 interface ProgressTrackerProps {

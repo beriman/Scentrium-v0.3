@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Search, BookOpen, GraduationCap, Filter } from "lucide-react";
-import { supabase } from "../../../../supabase/supabase";
+import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import CourseCard from "../components/CourseCard";
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,10 +7,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "../../../../supabase/supabase";
-import { useAuth } from "../../../../supabase/auth";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "../../../contexts/AuthContext";
 import { Lock, Play, CheckCircle } from "lucide-react";
-import PaymentProcessor from "./PaymentProcessor";
 
 interface EnrollmentButtonProps {
   courseId: string;
@@ -35,43 +34,6 @@ export default function EnrollmentButton({
     "none" | "pending" | "approved" | "rejected"
   >("none");
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
-
-  useEffect(() => {
-    const checkEnrollmentStatus = async () => {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from("learning_enrollments")
-          .select("status")
-          .eq("user_id", user.id)
-          .eq("course_id", courseId)
-          .single();
-
-        if (error && error.code !== "PGRST116") {
-          // PGRST116 means no rows returned
-          throw error;
-        }
-
-        if (data) {
-          setEnrollmentStatus(data.status);
-          setIsEnrolled(data.status === "approved");
-          if (onEnrollmentChange) {
-            onEnrollmentChange(data.status === "approved");
-          }
-        }
-      } catch (error) {
-        console.error("Error checking enrollment status:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkEnrollmentStatus();
-  }, [user, courseId, onEnrollmentChange]);
 
   const handleEnroll = async () => {
     if (!user) {
@@ -184,12 +146,35 @@ export default function EnrollmentButton({
           <DialogHeader>
             <DialogTitle>Enroll in {courseTitle}</DialogTitle>
           </DialogHeader>
-          <PaymentProcessor
-            courseId={courseId}
-            courseTitle={courseTitle}
-            price={price}
-            onPaymentComplete={handlePaymentComplete}
-          />
+          <div className="space-y-4">
+            <p>To complete your enrollment, please follow these steps:</p>
+            <ol className="list-decimal pl-5 space-y-2">
+              <li>
+                Transfer the payment of {formatPrice(price)} to our account
+              </li>
+              <li>Upload your payment receipt</li>
+              <li>Wait for admin verification (usually within 24 hours)</li>
+            </ol>
+            <div className="bg-blue-50 p-4 rounded-md border border-blue-200">
+              <h4 className="font-medium text-blue-800 mb-2">
+                Bank Transfer Details
+              </h4>
+              <p className="text-sm text-blue-700">Bank: BCA</p>
+              <p className="text-sm text-blue-700">Account: 1234567890</p>
+              <p className="text-sm text-blue-700">Name: Scentrium Indonesia</p>
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowPaymentDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button className="bg-purple-700" onClick={handlePaymentComplete}>
+                I've Made the Payment
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </>

@@ -12,8 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "../../../../supabase/supabase";
-import { useAuth } from "../../../../supabase/auth";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "../../../contexts/AuthContext";
 import {
   ArrowLeft,
   Clock,

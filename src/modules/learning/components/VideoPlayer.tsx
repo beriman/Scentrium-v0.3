@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "../../../../supabase/supabase";
-import { useAuth } from "../../../../supabase/auth";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "../../../contexts/AuthContext";
 import { Play, Pause, Volume2, VolumeX, Maximize, Lock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface VideoPlayerProps {
   videoUrl: string;
