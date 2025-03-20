@@ -108,92 +108,7 @@ const TopNavigation = ({
 
   // If user is not logged in, show a simplified navbar with login/signup buttons
   if (!user) {
-    return (
-      <div className="w-full h-16 border-b bg-background flex items-center justify-between px-4 fixed top-0 z-50">
-        <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="font-bold text-xl text-purple-700">Scentrium</span>
-          </Link>
-        </div>
-
-        <div className="hidden md:flex items-center gap-4">
-          {mainNavItems.slice(0, 3).map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium ${isActive(item.path) ? "bg-purple-100 text-purple-700" : "text-gray-700 hover:bg-gray-100"}`}
-            >
-              {item.icon}
-              <span>{item.name}</span>
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Link to="/login">
-            <Button
-              variant="outline"
-              className="border-purple-200 text-purple-700"
-            >
-              Masuk
-            </Button>
-          </Link>
-          <Link to="/signup">
-            <Button className="bg-purple-700 hover:bg-purple-800">
-              Daftar
-            </Button>
-          </Link>
-
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </Button>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-16 bg-white z-40 p-4">
-            <div className="flex flex-col space-y-4">
-              {mainNavItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-2 p-3 rounded-md ${isActive(item.path) ? "bg-purple-100 text-purple-700" : "text-gray-700"}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.icon}
-                  <span>{item.name}</span>
-                </Link>
-              ))}
-              <div className="border-t pt-4 mt-4">
-                <Link to="/login" className="block w-full">
-                  <Button
-                    variant="outline"
-                    className="w-full mb-2 border-purple-200 text-purple-700"
-                  >
-                    Masuk
-                  </Button>
-                </Link>
-                <Link to="/signup" className="block w-full">
-                  <Button className="w-full bg-purple-700 hover:bg-purple-800">
-                    Daftar
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+    return <></>;
   }
 
   return (
@@ -251,7 +166,6 @@ const TopNavigation = ({
           />
         </div>
       </div>
-
       {/* Right side icons and user menu */}
       <div className="flex items-center gap-2">
         {/* Mobile menu button */}
@@ -352,7 +266,6 @@ const TopNavigation = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-16 bg-white z-40 p-4">

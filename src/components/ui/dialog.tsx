@@ -35,9 +35,7 @@ const DialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay>
-      <>
-        <TopNavigation />
-      </>
+      <></>
     </DialogOverlay>
     <DialogPrimitive.Content
       ref={ref}
