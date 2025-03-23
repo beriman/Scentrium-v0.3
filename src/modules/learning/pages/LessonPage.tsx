@@ -236,4 +236,173 @@ export default function LessonPage() {
 
                 {progress?.status === "completed" && (
                   <div className="mt-4 bg-green-50 p-3 rounded-md border border-green-200 flex items-center">
-                    <CheckCircle className="h-5 w-5
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    <span className="text-green-700">
+                      Pelajaran telah diselesaikan
+                    </span>
+                  </div>
+                )}
+
+                {relatedProduct && (
+                  <div className="mt-4">
+                    <Separator className="my-4" />
+                    <h3 className="font-medium text-lg mb-2">Produk Terkait</h3>
+                    <Link
+                      to={`/marketplace/product/${relatedProduct.id}`}
+                      className="flex items-center p-3 border rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden mr-3">
+                        {relatedProduct.images && relatedProduct.images[0] ? (
+                          <img
+                            src={relatedProduct.images[0]}
+                            alt={relatedProduct.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                            <ShoppingBag className="h-6 w-6 text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{relatedProduct.name}</h4>
+                        <p className="text-purple-600 font-medium">
+                          {formatPrice(relatedProduct.price)}
+                        </p>
+                      </div>
+                    </Link>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-6">
+              {prevLesson ? (
+                <Button
+                  variant="outline"
+                  onClick={() => navigate(`/learning/lesson/${prevLesson.id}`)}
+                  className="flex items-center"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Pelajaran Sebelumnya
+                </Button>
+              ) : (
+                <div></div>
+              )}
+
+              {nextLesson ? (
+                <Button
+                  onClick={() => navigate(`/learning/lesson/${nextLesson.id}`)}
+                  className="flex items-center"
+                >
+                  Pelajaran Selanjutnya
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => navigate(`/learning/course/${course.id}`)}
+                  className="flex items-center"
+                >
+                  Kembali ke Kursus
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Course Info */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Tentang Kursus</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <h3 className="font-bold text-lg mb-2">{course.title}</h3>
+              <p className="text-gray-600 mb-4 line-clamp-3">
+                {course.description}
+              </p>
+              <Button
+                className="w-full"
+                onClick={() => navigate(`/learning/course/${course.id}`)}
+              >
+                Lihat Detail Kursus
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Module Lessons */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Daftar Pelajaran</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <h3 className="font-medium mb-3">{module.title}</h3>
+              <ul className="space-y-2">
+                {allLessons
+                  .filter((les) => les.module_id === module.id)
+                  .map((les) => (
+                    <li key={les.id}>
+                      <Link
+                        to={`/learning/lesson/${les.id}`}
+                        className={`flex items-center p-2 rounded-md ${
+                          les.id === lessonId
+                            ? "bg-purple-100 text-purple-800"
+                            : "hover:bg-gray-100"
+                        }`}
+                      >
+                        {les.is_preview ? (
+                          <Badge variant="outline" className="mr-2">
+                            Preview
+                          </Badge>
+                        ) : (
+                          !isEnrolled && (
+                            <Badge variant="outline" className="mr-2">
+                              Premium
+                            </Badge>
+                          )
+                        )}
+                        <span
+                          className={`flex-1 ${les.id === lessonId ? "font-medium" : ""}`}
+                        >
+                          {les.title}
+                        </span>
+                        {progress &&
+                          progress.lesson_id === les.id &&
+                          progress.status === "completed" && (
+                            <CheckCircle className="h-4 w-4 text-green-500 ml-2" />
+                          )}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Enrollment CTA */}
+          {!isEnrolled && (
+            <Card className="bg-purple-50 border-purple-200">
+              <CardContent className="pt-6">
+                <h3 className="font-bold text-lg mb-2 text-purple-800">
+                  Dapatkan Akses Penuh
+                </h3>
+                <p className="text-purple-700 mb-4">
+                  Daftar kursus ini untuk mendapatkan akses ke semua pelajaran
+                  dan materi eksklusif.
+                </p>
+                <Button
+                  className="w-full"
+                  onClick={() => navigate(`/learning/course/${course.id}`)}
+                >
+                  Daftar Sekarang
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
